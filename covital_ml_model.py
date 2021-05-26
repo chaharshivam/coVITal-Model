@@ -36,5 +36,17 @@ print(sample_rate_pos)
 # Audio data converted to array
 print(data_pos)
 
+# Mel spectogram of COVID positive cough audio
+y, sr = librosa.load(filename_pos)
+ps = librosa.feature.melspectrogram(y=y, sr=sr)
+print(ps.shape)
 
+librosa.display.specshow(ps,y_axis='mel',x_axis='time')
+
+## Mel spectogram of COVID Negative cough audio
+y, sr = librosa.load(filename_neg)
+ps = librosa.feature.melspectrogram(y=y, sr=sr)
+print(ps.shape)
+
+librosa.display.specshow(ps,y_axis='mel',x_axis='time')
 
