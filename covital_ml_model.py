@@ -50,3 +50,16 @@ print(ps.shape)
 
 librosa.display.specshow(ps,y_axis='mel',x_axis='time')
 
+# COVID Negative cough audio spectrum
+X = librosa.stft(y)
+Xdb = librosa.amplitude_to_db(abs(X))
+plt.figure(figsize=(14,5))
+librosa.display.specshow(Xdb,sr=sr,x_axis='time',y_axis='hz')
+
+# COVID Positive cough audio spectrum
+y, sr = librosa.load(filename_pos)
+X = librosa.stft(y)
+Xdb = librosa.amplitude_to_db(abs(X))
+plt.figure(figsize=(14,5))
+librosa.display.specshow(Xdb,sr=sr,x_axis='time',y_axis='hz')
+
