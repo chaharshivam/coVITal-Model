@@ -101,3 +101,22 @@ extracted_features_df.head(20)
 X=np.array(extracted_features_df['feature'].tolist())
 y=np.array(extracted_features_df['class'].tolist())
 
+# Label Encoding
+
+#y=np.array(pd.get_dummies(y))
+# Label Encoder
+from tensorflow.keras.utils import to_categorical
+from sklearn.preprocessing import LabelEncoder
+labelencoder=LabelEncoder()
+y=to_categorical(labelencoder.fit_transform(y))
+print(y)
+
+from sklearn.model_selection import train_test_split
+X_train,X_test,y_train,y_test=train_test_split(X,y,test_size=0.2,random_state=0)
+
+print(X_train)
+print(y)
+print(X_train.shape)
+print(X_test.shape)
+print(y_train.shape)
+print(y_test.shape)
