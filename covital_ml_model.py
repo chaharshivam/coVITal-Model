@@ -63,3 +63,41 @@ Xdb = librosa.amplitude_to_db(abs(X))
 plt.figure(figsize=(14,5))
 librosa.display.specshow(Xdb,sr=sr,x_axis='time',y_axis='hz')
 
+# Feature extraction using MFCC
+# Here we will be using Mel-Frequency Cepstral Coefficients(MFCC) from the audio samples. The MFCC summarises the frequency distribution across the window size, so it is possible to analyse both the frequency and time characteristics of the sound. These audio representations will allow us to identify features for classification.
+
+# Extracting features of one file (sample)
+filename_pos="clinical\original\pos\\pos-0421-084-cough-m-50.mp3"
+data_pos,sample_rate_pos=librosa.load(filename_pos)
+mfccs = librosa.feature.mfcc(y=data_pos, sr=sample_rate_pos, n_mfcc=40)
+print(mfccs.shape)
+print(mfccs)
+
+# Extracting features of all audio files
+def features_extractor(file):
+    audio, sample_rate = librosa.load(file_name, res_type='kaiser_best')
+    mfccs_features = librosa.feature.mfcc(y=audio, sr=sample_rate, n_mfcc=40)
+    mfccs_scaled_features = np.mean(mfccs_features.T, axis=0)
+
+    return mfccs_scaled_features
+
+from tqdm import tqdm
+### Now we iterate through every audio file and extract features
+### using Mel-Frequency Cepstral Coefficients
+audio_dataset_path='clinical\\original\\'
+extracted_features=[]
+for index_num,row in tqdm(metadata.iterrows()):
+    file_name = os.path.join(os.path.abspath(audio_dataset_path),str(row["folder"])+'\\',str(row["cough_filename"]))
+    final_class_labels=row["corona_test"]
+    data=features_extractor(file_name)
+    extracted_features.append([data,final_class_labels])
+
+
+### converting extracted_features to Pandas dataframe
+extracted_features_df=pd.DataFrame(extracted_features,columns=['feature','class'])
+extracted_features_df.head(20)
+
+### Split the dataset into independent and dependent dataset
+X=np.array(extracted_features_df['feature'].tolist())
+y=np.array(extracted_features_df['class'].tolist())
+
