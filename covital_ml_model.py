@@ -153,3 +153,29 @@ model.add(Activation('softmax'))
 
 print(model.summary())
 model.compile(loss='categorical_crossentropy',metrics=['accuracy'],optimizer='adam')
+
+# Training model
+from tensorflow.keras.callbacks import ModelCheckpoint
+from datetime import datetime
+
+num_epochs = 100
+num_batch_size = 32
+
+checkpointer = ModelCheckpoint(filepath='saved_models/audio_classification.hdf5',
+                               verbose=1, save_best_only=True)
+start = datetime.now()
+
+model.fit(X_train, y_train, batch_size=num_batch_size, epochs=num_epochs, validation_data=(X_test, y_test), callbacks=[checkpointer], verbose=1)
+
+
+duration = datetime.now() - start
+print("Training completed in time: ", duration)
+
+# Model accuracy
+test_accuracy=model.evaluate(X_test,y_test,verbose=0)
+print(test_accuracy[1])
+
+# Testing
+print(X_train[1])
+print(np.argmax(model.predict(X_train), axis=-1))
+
